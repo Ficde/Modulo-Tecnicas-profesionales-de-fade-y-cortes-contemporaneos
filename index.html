@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espacio de Repaso - FICDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ficde-azul-dark: #134252;
+            --ficde-azul-light: #2c5c6e;
+            --ficde-naranja: #e68161;
+            --ficde-naranja-hover: #ff9f85;
+            --tarjeta-bg: #f0f4f5;
+            --input-bg: #e2e8eb;
+            --texto-principal: #0f2d38;
+            --texto-secundario: #4a636e;
+            --verde-exito: #2e7d32;
+            --verde-bg: #c8e6c9;
+            --rojo-error: #c62828;
+            --naranja-bg: #ffe0b2;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--ficde-azul-dark) 0%, #0a252e 100%);
+            min-height: 100vh;
+            color: var(--texto-principal);
+            padding: 20px;
+            background-attachment: fixed;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo-img { height: 50px; width: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+
+        .module-tag {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .welcome-card {
+            background: var(--tarjeta-bg);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-bottom: 6px solid var(--ficde-naranja);
+            margin-bottom: 30px;
+        }
+
+        .welcome-title {
+            color: var(--ficde-azul-dark);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .fede-avatar-large {
+            width: 140px; height: 140px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            padding: 5px;
+            box-shadow: 0 10px 25px rgba(230, 129, 97, 0.5);
+            cursor: pointer;
+            transition: transform 0.3s;
+            overflow: hidden;
+        }
+
+        .fede-avatar-large:hover { transform: scale(1.1); }
+
+        .fede-avatar-large img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid white;
+        }
+
+        .blocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .block-card {
+            background: var(--tarjeta-bg);
+            padding: 30px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .block-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--ficde-naranja);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .block-icon {
+            font-size: 3rem; margin-bottom: 15px;
+            background: rgba(19, 66, 82, 0.1);
+            width: 70px; height: 70px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; color: var(--ficde-azul-dark);
+        }
+
+        .block-title { color: var(--ficde-azul-dark); font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+
+        .block-desc { color: var(--texto-secundario); font-size: 0.9rem; line-height: 1.5; }
+
+        .activity-screen {
+            display: none;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .activity-screen.active { display: grid; }
+
+        .tutor-sidebar {
+            background: var(--ficde-azul-light);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            position: sticky; top: 20px;
+        }
+
+        .tutor-bubble {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--ficde-azul-dark);
+            margin-top: 20px;
+            position: relative;
+            text-align: left;
+        }
+
+        .tutor-bubble::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            border-width: 0 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent rgba(255,255,255,0.95);
+            transform: translateX(-50%);
+        }
+
+        .activity-content {
+            background: var(--tarjeta-bg);
+            padding: 40px;
+            border-radius: 16px;
+            min-height: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .act-badge {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .act-title { font-size: 1.8rem; color: var(--ficde-azul-dark); margin: 15px 0; font-weight: 800; }
+
+        .act-instruction { font-size: 1.1rem; color: var(--texto-secundario); margin-bottom: 30px; }
+
+        .student-input {
+            width: 100%;
+            height: 150px;
+            padding: 20px;
+            background: var(--input-bg);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            color: var(--ficde-azul-dark);
+            transition: all 0.3s;
+        }
+
+        .student-input:focus { background: white; border-color: var(--ficde-naranja); outline: none; }
+
+        .fill-input {
+            border: none;
+            border-bottom: 2px solid var(--ficde-naranja);
+            background: transparent;
+            font-weight: 700;
+            color: var(--ficde-azul-dark);
+            text-align: center;
+            width: 150px;
+            font-size: 1.1rem;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 18px;
+            margin-top: 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            background: linear-gradient(90deg, var(--ficde-naranja), #ff9f85);
+            color: white;
+            box-shadow: 0 6px 20px rgba(230, 129, 97, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .btn-action:hover { transform: translateY(-3px); }
+
+        .btn-back {
+            background: transparent;
+            color: var(--texto-secundario);
+            box-shadow: none;
+            border: 2px solid #ccc;
+            margin-top: 15px;
+        }
+
+        .btn-back:hover { background: #e0e0e0; color: var(--ficde-azul-dark); }
+
+        .traffic-row, .checklist-item {
+            background: white;
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .traffic-row:hover, .checklist-item:hover { border-color: var(--ficde-naranja); transform: translateX(5px); }
+
+        .traffic-btn {
+            width: 35px; height: 35px;
+            border-radius: 50%; border: 2px solid #ddd;
+            cursor: pointer;
+            opacity: 0.3;
+        }
+
+        .traffic-btn.active { opacity: 1; transform: scale(1.2); border-color: var(--ficde-azul-dark); }
+
+        .bg-green { background: #4CAF50; }
+
+        .bg-yellow { background: #FFC107; }
+
+        .bg-red { background: #f44336; }
+
+        .check-box {
+            width: 24px; height: 24px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .checklist-item.selected { border-color: var(--ficde-naranja); background: #fff5f0; }
+
+        .checklist-item.selected .check-box { background: var(--ficde-naranja); border-color: var(--ficde-naranja); color: white; }
+
+        .feedback-area {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            display: none;
+            animation: slideUp 0.4s;
+        }
+
+        .feedback-success { background: var(--verde-bg); color: #1b5e20; border-left: 6px solid var(--verde-exito); }
+
+        .feedback-retry { background: var(--naranja-bg); color: #bf360c; border-left: 6px solid #ef6c00; }
+
+        .feedback-fail { background: #cfd8dc; color: #37474f; border-left: 6px solid #455a64; }
+
+        #musicToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .activity-screen { grid-template-columns: 1fr; }
+            .tutor-sidebar { display: flex; align-items: center; gap: 20px; }
+            .fede-avatar-large { width: 80px; height: 80px; }
+            .tutor-bubble::after { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- AUDIOS MP3 - Todos en la misma carpeta -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="chill-study-desk-focus-concentration-lofi-451180.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="saludoInicial" preload="auto" src="saludoinicial.mp3"></audio>
+    <audio id="mensaje1Ejercicios" preload="auto" src="mensaje1ejercicios.mp3"></audio>
+    <audio id="mensaje2Ejercicios" preload="auto" src="mensaje2ejercicios.mp3"></audio>
+    <audio id="mensaje3Ejercicios" preload="auto" src="mensaje3ejercicios.mp3"></audio>
+    <audio id="mensaje4Ejercicios" preload="auto" src="mensaje4ejercicios.mp3"></audio>
+    <audio id="respuestaCorrecta" preload="auto" src="respuestacorrecta.mp3"></audio>
+    <audio id="primerError" preload="auto" src="primererror.mp3"></audio>
+    <audio id="segundoError" preload="auto" src="segundoerror.mp3"></audio>
+    <audio id="loLograste" preload="auto" src="lolograste.mp3"></audio>
+
+    <audio id="hoverSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.m4a"></audio>
+    <audio id="clickSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.m4a"></audio>
+    <audio id="successSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.m4a"></audio>
+
+    <button id="musicToggle" onclick="toggleMusic()">🔇</button>
+
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="logo.png" alt="FICDE" class="logo-img" onerror="this.style.display='none'; document.getElementById('altLogo').style.display='block'">
+                <h2 id="altLogo" style="display:none; color:white; font-weight:800;">FICDE</h2>
+            </div>
+            <div class="module-tag">Modulo Técnicas profesionales de fade y cortes contemporáneos</header>
+        <div id="selectionScreen">
+            <div class="welcome-card">
+                <div class="fede-avatar-large" onclick="playAudio('saludoInicial')">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <h1 class="welcome-title">Espacio de Repaso Interactivo</h1>
+                <p style="color: var(--texto-secundario); font-size: 1.1rem;">Donde el conocimiento se convierte en acción</p>
+            </div>
+
+            <div class="blocks-grid">
+                <div class="block-card" onclick="startModule('sintesis')">
+                    <div class="block-icon">🧠</div>
+                    <div class="block-title">Síntesis</div>
+                    <div class="block-desc">Técnicas de corte contemporáneo en barbería, incluyendo seccionamiento, manejo y regulación de máquinas, control de alturas y guías, transiciones, texturizado, corrección de imperfecciones y reconocimiento de tendencias actuales.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('analisis')">
+                    <div class="block-icon">🔍</div>
+                    <div class="block-title">Análisis Crítico</div>
+                    <div class="block-desc">Errores técnicos frecuentes en cortes de barbería relacionados con seccionamiento, regulación de la máquina, líneas guía, transiciones y simetría, así como exceso de texturizado, sobrecorrección e interpretación inadecuada de referencias visuales.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('escenarios')">
+                    <div class="block-icon">🎬</div>
+                    <div class="block-title">Escenarios</div>
+                    <div class="block-desc">Adaptación y resolución de situaciones frecuentes en cortes y degradados, considerando características del cabello, cuero cabelludo, piel, rostro y necesidades del cliente, junto con correcciones técnicas y recomendaciones de mantenimiento.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('practica')">
+                    <div class="block-icon">⚡</div>
+                    <div class="block-title">Práctica</div>
+                    <div class="block-desc">Secuencia práctica de corte y degradado profesional, incluyendo seccionamiento, creación y eliminación de líneas guía, transiciones, conexión con tijera, texturizado, definición de contornos y revisión final de simetría.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="activityScreen" class="activity-screen">
+            <div class="tutor-sidebar">
+                <div class="fede-avatar-large" style="width: 100px; height: 100px; border-color: var(--ficde-naranja);" onclick="replayTutorMessage()">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <div style="flex:1;">
+                    <h3 style="color:var(--ficde-naranja); margin-bottom:5px;">Tutor Fede</h3>
+                    <div class="tutor-bubble" id="tutorMessage"></div>
+                </div>
+            </div>
+
+            <div class="activity-content" id="activityContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // ===== GESTIÓN DE AUDIO MP3 =====
+        const audioFiles = {
+            saludoInicial: document.getElementById('saludoInicial'),
+            mensaje1: document.getElementById('mensaje1Ejercicios'),
+            mensaje2: document.getElementById('mensaje2Ejercicios'),
+            mensaje3: document.getElementById('mensaje3Ejercicios'),
+            mensaje4: document.getElementById('mensaje4Ejercicios'),
+            correcto: document.getElementById('respuestaCorrecta'),
+            error1: document.getElementById('primerError'),
+            error2: document.getElementById('segundoError'),
+            lolograste: document.getElementById('loLograste')
+        };
+
+        function playAudio(audioKey) {
+            if (audioFiles[audioKey]) {
+                audioFiles[audioKey].currentTime = 0;
+                audioFiles[audioKey].play().catch(err => console.log('Error al reproducir audio:', err));
+            }
+        }
+
+        const bgMusic = document.getElementById('bgMusic');
+        const clickSoundEl = document.getElementById('clickSound');
+        const successSoundEl = document.getElementById('successSound');
+        const hoverSoundEl = document.getElementById('hoverSound');
+
+        let musicOn = false;
+        let audioUnlocked = false;
+
+        function unlockAudio() {
+            if (audioUnlocked) return;
+            [clickSoundEl, successSoundEl, hoverSoundEl].forEach(a => {
+                a.volume = 0;
+                const p = a.play();
+                if (p) p.then(() => { a.pause(); a.currentTime = 0; a.volume = 1; }).catch(()=>{});
+            });
+            audioUnlocked = true;
+        }
+
+        document.addEventListener('pointerdown', unlockAudio, { once: true });
+        document.addEventListener('keydown', unlockAudio, { once: true });
+
+        function toggleMusic() {
+            unlockAudio();
+            if (!musicOn) {
+                bgMusic.volume = 0.1;
+                bgMusic.play().catch(() => {});
+                document.getElementById('musicToggle').innerText = '🎵';
+            } else {
+                bgMusic.pause();
+                document.getElementById('musicToggle').innerText = '🔇';
+            }
+            musicOn = !musicOn;
+        }
+
+        function playSound(type) {
+            if (!audioUnlocked) return;
+            try {
+                if (type === 'click') { clickSoundEl.currentTime=0; clickSoundEl.volume=0.8; clickSoundEl.play().catch(()=>{}); }
+                if (type === 'success') { successSoundEl.currentTime=0; successSoundEl.volume=0.8; successSoundEl.play().catch(()=>{}); }
+                if (type === 'hover') { hoverSoundEl.currentTime=0; hoverSoundEl.volume=0.2; hoverSoundEl.play().catch(()=>{}); }
+            } catch (e) {}
+        }
+
+        function wireUiSounds() {
+            document.querySelectorAll('.block-card, .btn-action, .checklist-item, .traffic-row, .fede-avatar-large').forEach(el => {
+                if (el.dataset.sound === '1') return;
+                el.dataset.sound = '1';
+                el.addEventListener('mouseenter', () => playSound('hover'));
+                el.addEventListener('click', () => playSound('click'));
+            });
+        }
+
+        window.addEventListener('load', wireUiSounds);
+
+        // ===== NORMALIZACIÓN DE TEXTO =====
+        function normalizar(txt) {
+            return txt
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+        }
+
+        // ===== ACTIVIDADES: validaciones de texto simplificadas ===
+const modules = {
+
+    // ===================== SÍNTESIS =====================
+    sintesis: [
+        {
+            type: 'text',
+            badge: 'Planificación del corte',
+            title: 'División y seccionamiento técnico',
+            instruction: 'Define la función del seccionamiento técnico en la preparación de la estructura de un corte masculino contemporáneo.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('seccionamiento') || v.includes('estructura')) c++;
+                if (v.includes('cabello') || v.includes('dise')) c++;
+                return c >= 2;
+            },
+            tutor: 'Considera que seccionar no es solo separar el cabello, sino organizar espacialmente las zonas de longitud.',
+            explanation: 'El seccionamiento técnico permite organizar la estructura del cabello y garantizar una planificación limpia del diseño.'
+        },
+        {
+            type: 'text',
+            badge: 'Componentes de la máquina',
+            title: 'Cuchilla fija y móvil',
+            instruction: 'Clasifica las funciones operativas que cumplen la cuchilla fija y la cuchilla móvil en el mecanismo de la máquina.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('cuchilla')) c++;
+                if (v.includes('corte') || v.includes('soporte')) c++;
+                if (v.includes('longitud')) c++;
+                return c >= 2;
+            },
+            tutor: 'Diferencia la hoja pequeña que efectúa el corte de la hoja mayor que sirve de soporte y guía.',
+            explanation: 'La cuchilla móvil ejecuta la acción de corte mientras la fija actúa como soporte y determina la longitud móvil.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Regulación de palanca',
+            title: 'Posiciones y alturas equivalentes',
+            instruction: 'Selecciona las tres alturas aproximadas alcanzadas según la posición de la palanca de ajuste lateral de la máquina.',
+            items: [
+                { text: 'Palanca arriba con corte cerrado aproximado a 0 mm', correct: true },
+                { text: 'Palanca en posición media con corte aproximado a 0,8 mm', correct: true },
+                { text: 'Palanca completamente abierta con altura fija de 5 mm', correct: false },
+                { text: 'Palanca completamente abajo con corte aproximado a 1,5 mm', correct: true }
+            ],
+            tutor: 'Identifica la variación gradual que va desde la posición cerrada hasta la apertura total del selector.',
+            explanation: 'La palanca cerrada corta a cero, la posición media a casi un milímetro y la abierta alcanza milímetro y medio.'
+        },
+        {
+            type: 'text',
+            badge: 'Control de niveles',
+            title: 'Gestión de alturas',
+            instruction: 'Detalla la importancia técnica del control de alturas para evitar ascender excesivamente las líneas guía en los laterales.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('alturas') || v.includes('ubicaci')) c++;
+                if (v.includes('preservando') || v.includes('estructura') || v.includes('laterales')) c++;
+                return c >= 2;
+            },
+            tutor: 'Analiza que la medida determina cuánto se corta y la altura establece el límite superior de trabajo.',
+            explanation: 'gestionar las alturas define la ubicación de cada guía preservando la estructura de los laterales.'
+        },
+        {
+    type: 'blanks',
+    badge: 'Accesorios de corte',
+    title: 'Peines guía e intermedios',
+    instruction: 
+        'Completá las frases.<br><br>' +
+        '1. Los peines guía controlan la ___ del cabello y se combinan con la ___ para lograr medidas ___.<br>',
+    blanks: ['longitud', 'palanca', 'intermedias'],
+    tutor: 'Relaciona el número de la guía con la graduación de la palanca lateral de ajuste.',
+    explanation: 'Utilizar peines guía gradúa la longitud deseada, permitiendo ajustar la palanca para crear medidas intermedias.'
+},
+        {
+            type: 'text',
+            badge: 'Aspecto visual del degradado',
+            title: 'Corte por tonalidades',
+            instruction: 'Expone el principio del corte por tonalidades relacionando las longitudes del cabello con las áreas claras y oscuras.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('corte') || v.includes('tonalidades')) &&
+                    (v.includes('capilar') || v.includes('vello'))
+                );
+            },
+            tutor: 'Observa cómo la visibilidad del cuero cabelludo genera zonas claras y el cabello denso aporta sombras oscuras.',
+            explanation: 'El corte por tonalidades equilibra el contraste visual combinando la densidad capilar con la longitud del vello.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Maniobras de transición',
+            title: 'Movimiento de salida o cuchareo',
+            instruction: 'Identifica las tres características operativas del movimiento de salida o cuchareo aplicado al borrar líneas.',
+            items: [
+                { text: 'Movimiento curvo hacia afuera al acercarse al límite superior', correct: true },
+                { text: 'Desplazamiento controlado sin presionar la máquina contra la piel', correct: false },
+                { text: 'Separación progresiva de las cuchillas respecto al cuero cabelludo', correct: true },
+                { text: 'Hoja fija y hoja móvil alineadas', correct: true }
+            ],
+            tutor: 'Concéntrate en el gesto parabólico que aleja la máquina de la cabeza para no generar una nueva franja.',
+            explanation: 'El cuchareo realiza una curva hacia afuera que despeja las cuchillas para suavizar el borde.'
+        },
+        {
+            type: 'text',
+            badge: 'Modificación de masa',
+            title: 'Desfilado versus entresacado',
+            instruction: 'Describe las diferencias de objetivo técnico entre la maniobra de desfilado en puntas y la técnica de entresacado.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let c = 0;
+                if (v.includes('desfilado') || v.includes('ligereza') || v.includes('entresacado')) c++;
+                if (v.includes('densidad') || v.includes('cabello')) c++;
+                return c >= 2;
+            },
+            tutor: 'Distingue el trabajo intencional en las puntas para dar fluidez de la reducción de volumen con tijera dentada.',
+            explanation: 'El desfilado aporta ligereza y movimiento en puntas mientras el entresacado reduce la densidad general del cabello.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Control de calidad',
+            title: 'Corrección e inspección final',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'La secuencia profesional de revisión comprende observar el corte completo, identificar la falla, corregir y comprobar', color: 'green' },
+                { text: 'Borrar una línea entre dos alturas exige subir indefinidamente la máquina hacia la zona superior', color: 'red' },
+                { text: 'La corrección de sombras debe realizarse de forma localizada sin repasar sectores ya equilibrados', color: 'green' },
+                { text: 'La simetría lateral requiere que ambos lados compartan exactamente la misma cantidad de cabellos individuales', color: 'red' }
+            ],
+            tutor: 'Examina los pasos de verificación y la focalización de ajustes para no desarmar la estructura.',
+            explanation: 'La revisión metódica permite detectar sombras e intervenir en la zona localizada con precisión.'
+        },
+        {
+            type: 'text',
+            badge: 'Estilos contemporáneos',
+            title: 'Clasificación de variantes de Fade',
+            instruction: 'Sintetiza las características distintivas que diferencian un Low Fade, Mid Fade y High Fade según la altura de la transición',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('degradado') || v.includes('transici')) &&
+                    (v.includes('espec') || v.includes('lateral') || v.includes('altura'))
+                );
+            },
+            tutor: 'Compara la ubicación de la línea de cambio cerca de la oreja, en la zona media o en la parte superior lateral',
+            explanation: 'Cada tipo de degradado ubica la transición en una altura específica del lateral del cráneo.'
+        }
+    ],
+
+    // ===================== ANÁLISIS =====================
+    analisis: [
+        {
+            type: 'text',
+            badge: 'Fallas de planificación',
+            title: 'Falta de seccionamiento previo',
+            instruction: 'Analiza las consecuencias de iniciar un corte degradado sin delimitar técnicamente las secciones superior y laterales',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('seccionamiento') || v.includes('descontrol')) &&
+                    (v.includes('alturas') || v.includes('longitud') || v.includes('superior') || v.includes('planificada'))
+                );
+            },
+            tutor: 'Evalúa cómo la falta de separación previa provoca invasiones accidentales en sectores que debían mantener masa.',
+            explanation: 'Omitir el seccionamiento genera descontrol en las alturas y destruye la longitud superior planificada.'
+        },
+        {
+            type: 'text',
+            badge: 'Errores de regulación',
+            title: 'Inobservancia de la palanca',
+            instruction: 'Evalúa los problemas de continuidad visual que surgen al omitir las posiciones intermedias de la palanca de ajuste.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('ajuste') || v.includes('palanca') || v.includes('franjas')) &&
+                    v.includes('degradado')
+                );
+            },
+            tutor: 'Observa cómo saltar bruscamente de palanca cerrada a abierta crea marcas rígidas imposibles de disimular.',
+            explanation: 'Ignorar el ajuste de palanca crea franjas oscuras y produce discontinuidad en el degradado'
+        },
+        {
+            type: 'checklist',
+            badge: 'Desviaciones en el degradado',
+            title: 'Ascenso incontrolado de la guía',
+            instruction: 'Distingue tres consecuencias negativas de subir la máquina sin control al intentar borrar una marca visible.',
+            items: [
+                { text: 'Elevación excesiva de la zona corta perdiendo el diseño', correct: true },
+                { text: 'Destrucción del espacio necesario para construir las transiciones', correct: true },
+                { text: 'Suavizado automático de la sombra sin alterar la zona superior.', correct: false },
+                { text: 'Desequilibrio de la altura planificada respecto al lateral opuesto', correct: true }
+            ],
+            tutor: 'Identifica cómo el intento de borrar una línea subiendo la máquina traslada el error más arriba.',
+            explanation: 'Subir la máquina sin control provoca la elevación de la guía y el desequilibrio lateral del corte'
+        },
+        {
+            type: 'text',
+            badge: 'Defectos de maniobra',
+            title: 'Entrada rígida sin cuchareo',
+            instruction: 'Examina los defectos estéticos que provoca una entrada recta y plana de la máquina sin ejecutar el movimiento de salida.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Presionar') || v.includes('cuchareo')) &&
+                    (v.includes('escalones') || v.includes('rigidez')) &&
+                    (v.includes('trazo'))
+                );
+            },
+            tutor: 'Considera cómo la presión constante de las cuchillas contra el cráneo clava líneas profundas en la masa capilar.',
+            explanation: 'Presionar sin cuchareo genera escalones marcados debido a la rigidez del trazo directo.'
+        },
+        {
+    type: 'blanks',
+    badge: 'Mala praxis en texturizado',
+    title: 'Exceso de entresacado en raíz',
+    instruction: 
+        'Completar la frase.<br><br>' +
+        '1. Entresacar en exceso cerca de la ___ genera huecos de ___ y provoca erizamiento en la ___.<br>',
+    blanks: ['raíz', 'densidad', 'superficie'],
+    tutor: 'Piensa en lo que ocurre cuando se cortan cabellos cortos bajo mechas largas cerca del cuero cabelludo.',
+    explanation: 'Aplicar tijera dentada en la raíz compromete la densidad y crea erizamiento en la superficie.'
+},
+        {
+            type: 'text',
+            badge: 'Errores de retocado',
+            title: 'Sobre-corrección destructiva',
+            instruction: 'Cuestiona el impacto de repasar repetidamente y de forma indiscriminada todo el corte durante la fase de retocado',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('correcci') || v.includes('desgaste')) &&
+                    (v.includes('cabello') || v.includes('estructura') || v.includes('previa'))
+                );
+            },
+            tutor: 'Analiza por qué la revisión debe ser puntual sobre la falla y no una repetición a ciegas del trabajo realizado.',
+            explanation: 'La sobre-corrección constante causa el desgaste del cabello y arruina la estructura previa.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Sesgos de perspectiva',
+            title: 'Evaluación a corta distancia',
+            instruction: 'Reconoce tres errores de juicio visual cometidos al evaluar la simetría del corte trabajando pegado al cliente.',
+            items: [
+                { text: 'Incapacidad para detectar inclinaciones o diferencias de peso global', correct: true },
+                { text: 'Detección instantánea de todas las asimetrías mediante visión microscópica.', correct: false },
+                { text: 'Pérdida de la visión panorámica de ambos laterales en simultáneo', correct: true },
+                { text: 'Dificultad para valorar el equilibrio de las sombras a la distancia', correct: true }
+            ],
+            tutor: 'Recuerda que alejarse un metro es indispensable para comparar ambos lados en conjunto.',
+            explanation: 'trabajar a corta distancia impide evaluar la simetría y nubla la visión panorámica del degradado.'
+        },
+        {
+            type: 'text',
+            badge: 'Incompatibilidad de diseño',
+            title: 'Selección inadecuada de High Fade',
+            instruction: 'Argumenta por qué seleccionar un High Fade en un cliente con zona parietal estrecha o baja densidad lateral es un error.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('degradado') || v.includes('densidad') || v.includes('desproporci')) &&
+                    (v.includes('facial') || v.includes('contraste'))
+                );
+            },
+            tutor: 'Observa cómo despejar demasiado los laterales en cabellos finos acentúa la delgadez del rostro.',
+            explanation: 'Un degradado alto en baja densidad genera desproporción facial y acentúa el contraste negativo.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Distorsiones en tendencias',
+            title: 'Mal uso de la tijera de pulir',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Usar tijera dentada en cabellos muy finos o escasos provoca pérdida de cuerpo y aspecto transparente', color: 'green' },
+                { text: 'El Skin Fade requiere verificar la ausencia de irritación antes de pasar la rasuradora sobre la piel', color: 'green' },
+                { text: 'El desfilado debe ejecutarse cortando transversalmente la mecha de forma horizontal y recta', color: 'red' },
+                { text: 'Las líneas oscuras en un degradado indican que en esa zona se cortó demasiado cabello', color: 'red' }
+            ],
+            tutor: 'Contrasta los efectos del vaciado de volumen según el grosor del hilo capilar del cliente.',
+            explanation: 'La tijera dentada en cabello fino elimina el cuerpo natural y transparenta la zona.'
+        },
+        {
+            type: 'text',
+            badge: 'Errores de interpretación',
+            title: 'Copia ciega de imágenes',
+            instruction: 'Critica la tendencia de replicar fielmente una imagen de catálogo sin adaptar el corte al remolino y tipo de rostro',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Copiar') || v.includes('fotos')) &&
+                    (v.includes('adaptaci') || v.includes('remolinos') || v.includes('cliente'))
+                );
+            },
+            tutor: 'Considera que la foto muestra un caso único con una morfología y dirección de nacimiento específicas.',
+            explanation: 'Copiar fotos de catálogo sin adaptación ignora los remolinos naturales del cliente.'
+        }
+    ],
+    // ===================== ESCENARIOS =====================
+    escenarios: [
+        {
+            type: 'text',
+            badge: 'Desafíos anatómicos',
+            title: 'Remolinos frontales o en coronilla',
+            instruction: 'Juzga el procedimiento técnico adecuado para adaptar la zona superior en un cliente con remolinos frontales muy rebeldes.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('Respetar') ||
+                    (
+                        (v.includes('direcci') || v.includes('remolino') || v.includes('cabello')) &&
+                        (v.includes('erice'))
+                    )    
+                );
+            },
+            tutor: 'Evalúa la necesidad de conservar mayor longitud y peso para evitar que el cabello se levante sin control.',
+            explanation: 'Respetar la dirección del remolino conservando peso previene que el cabello se erice descontroladamente.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Alteraciones cutáneas',
+            title: 'Trabajo sobre cicatrices laterales',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Ante una cicatriz en el lateral, es conveniente planificar la altura del degradado para integrarla o disimularla.', color: 'green' },
+                { text: 'La rasuradora debe pasarse con máxima fuerza sobre protuberancias o cicatrices relieve para emparejar.', color: 'red' },
+                { text: 'Las zonas con cicatrices absorben más sombra y siempre se ven más oscuras que el resto del corte.', color: 'red' },
+                { text: 'Un Taper localizado permite limpiar los contornos sin exponer imperfecciones de la zona media lateral.', color: 'green' }
+            ],
+            tutor: 'Analiza la elección de la altura del Fade según la presencia de irregularidades en la piel.',
+            explanation: 'Adaptar la altura del corte permite disimular una cicatriz mediante el trabajo con Taper.'
+        },
+        {
+            type: 'text',
+            badge: 'Densidad heterogénea',
+            title: 'Zonas de menor cobertura',
+            instruction: 'Determina la estrategia de alturas y peines guía para un cliente que presenta menor densidad capilar en un lateral.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('compensaci') || v.includes('alturas')) &&
+                    (v.includes('equilibra') || v.includes('sombras') || v.includes('lados'))
+                );
+            },
+            tutor: 'Considera usar guías más largas en el lado menos denso para equilibrar visualmente las tonalidades.',
+            explanation: 'La compensación de alturas en zonas de baja densidad equilibra las sombras en ambos lados.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Asesoramiento profesional',
+            title: 'Incompatibilidad de estilo y rutina',
+            instruction: 'Elige tres argumentos profesionales para disuadir a un cliente corporativo que pide un Mohicano extremo de peinado complejo.',
+            items: [
+                { text: 'Pasado directo de shaver a máxima velocidad sobre el cabello largo', correct: false },
+                { text: 'Explicación sobre la exigencia de peinado diario y productos fijadores requeridos', correct: true },
+                { text: 'Demostración del alto contraste que altera el código de vestimenta formal', correct: true },
+                { text: 'Propuesta alternativa de un Crop texturizado o Taper moderado más versátil', correct: true }
+            ],
+            tutor: 'Busca razones basadas en el mantenimiento cotidiano, el entorno laboral y opciones de estilo balanceadas.',
+            explanation: 'Argumentar sobre el mantenimiento cotidiano, el entorno laboral y proponer un Crop orienta al cliente.'
+        },
+        {
+            type: 'text',
+            badge: 'Corrección de trabajos externos',
+            title: 'Reparación de líneas duras',
+            instruction: 'Resuelve los pasos técnicos para borrar una línea dura dejada por un número #1 en un cliente que busca un Mid Fade suave.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Ajustar') || v.includes('palanca') || v.includes('medida')) &&
+                    (v.includes('0,5') || v.includes('pulir') || v.includes('transici'))
+                );
+            },
+            tutor: 'Utiliza la guía #0,5 o la palanca entreabierta trabajando exclusivamente sobre el borde de la marca.',
+            explanation: 'Ajustar la palanca en la medida 0,5 permite borrar la línea y pulir la transición.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Visagismo aplicado',
+            title: ' Elección para rostro alargado',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Un Low Fade es ideal para rostros alargados porque conserva volumen en los laterales superiores.', color: 'green' },
+                { text: 'El High Fade extremadamente alto es la mejor opción para acortar visualmente un rostro alargado.', color: 'red' },
+                { text: 'Mantener cierta longitud lateral evita acentuar la estrechez de las sienes en caras finas.', color: 'green' },
+                { text: 'Un tupé vertical muy elevado compensa la longitud de un rostro rectangular haciéndolo ver redondo.', color: 'red' }
+            ],
+            tutor: 'Reflexiona sobre la distribución del volumen lateral para armonizar las proporciones rectangulares.',
+            explanation: 'El Low Fade preserva volumen lateral previniendo el alargamiento óptico del rostro.'
+        },
+        {
+            type: 'text',
+            badge: 'Sensibilidad cutánea',
+            title: 'Manejo de pieles reactivas',
+            instruction: 'Prioriza las precauciones al realizar un Skin Fade con rasuradora en un cliente con tendencia al enrojecimiento.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Controlar') || v.includes('presi')) &&
+                    (v.includes('rasuradora') || v.includes('piel') || v.includes('zonas') || v.includes('sensibles'))
+                );
+            },
+            tutor: 'Considera estirar suavemente la piel, usar lubricación previa y no realizar pasadas repetidas a contrapelo.',
+            explanation: 'Controlar la presión de la rasuradora y estirar la piel evita la irritación en zonas sensibles.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Falla de equipamiento',
+            title: 'Desajuste de palanca en servicio',
+            instruction: 'Especifica tres acciones inmediatas si la palanca de ajuste se afloja y se desliza sola durante la pasada.',
+            items: [
+                { text: 'Interrumpir el corte inmediatamente antes de continuar avanzando sobre el cabello', correct: true },
+                { text: 'Verificar si la medida cambió accidentalmente trasquilando la zona', correct: true },
+                { text: 'Ajustar el tornillo del selector con destornillador antes de reanudar', correct: true },
+                { text: 'Continuar cortando rápido con la palanca suelta para terminar a tiempo', correct: false }
+            ],
+            tutor: 'Enfócate en detener el trabajo, revisar la altura cortada y calibrar la herramienta de inmediato.',
+            explanation: 'Interrumpir el paso, revisar la altura y ajustar el selector evita esquilados indeseados.'
+        },
+        {
+            type: 'text',
+            badge: 'Despoblación en coronilla',
+            title: 'Integración de zona clara',
+            instruction: 'Propone el manejo de longitudes y texturizado para integrar una zona clara en la coronilla en un corte contemporáneo.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('Preservar') || v.includes('coronilla')) &&
+                    (v.includes('volumen') || v.includes('cabello'))
+                );
+            },
+            tutor: 'Evita entresacar sobre la zona clara y mantiene cabellos circundantes con suficiente largo para cubrir.',
+            explanation: 'Preservar masa en la coronilla y peinar con volumen logra la integración visual del cabello.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Educación al cliente',
+            title: 'Mantenimiento de Textured Crop',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Un corte texturizado no requiere ningún tipo de peinado ni producto posterior al lavado.', color: 'red' },
+                { text: 'Explicar al cliente el uso de ceras mate o polvos de textura garantiza que mantenga el estilo en casa.', color: 'green' },
+                { text: 'Las pomadas brillantes y pesadas son el producto ideal para resaltar un Textured Crop despeinado.', color: 'red' },
+                { text: 'Indicar la frecuencia de retoque a las 3 o 4 semanas asegura conservar los contornos definidos.', color: 'green' }
+            ],
+            tutor: 'Considera la importancia de enseñar el estilizado diario con productos de acabado mate.',
+            explanation: 'Recomendar polvos de textura, fijar retoques periódicos y evitar grasas mantiene el Crop impecable.'
+        }
+    ],
+
+    // ===================== PRÁCTICA =====================
+    practica: [
+        {
+            type: 'checklist',
+            badge: 'Preparación de la cabeza',
+            title: 'Secuencia de seccionamiento',
+            instruction: 'Organiza los tres pasos iniciales para aislar la zona superior antes de comenzar a pasar la máquina en los laterales.',
+            items: [
+                { text: 'Humedecer el cabello superior para lograr control sobre las mechas', correct: true },
+                { text: 'Pasar directamente el peine #1 desde la patilla hasta la coronilla sin dividir', correct: false },
+                { text: 'Peinar la masa superior hacia el centro sujetándola con pinzas de corte', correct: true },
+                { text: 'Trazar una división limpia siguiendo la herradura o línea parietal', correct: true }
+            ],
+            tutor: 'Busca la preparación que humedece, traza la herradura y sujeta el cabello largo arriba.',
+            explanation: 'Humedecer el cabello, trazar la herradura y colocar pinzas deja libres los laterales.'
+        },
+        {
+            type: 'text',
+            badge: 'Inicio del degradado',
+            title: 'Trazado de la línea base',
+            instruction: 'Ejecuta mentalmente la técnica para marcar la línea base inicial utilizando la máquina en un Mid Fade.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('base') || v.includes('cerrada') || v.includes('precisi') || v.includes('corte'))
+                );
+            },
+            tutor: 'Visualiza el recorrido horizontal a la altura de la sien con la palanca cerrada o guía inicial.',
+            explanation: 'Marcar la línea base con la máquina cerrada establece la precisión inicial del corte.'
+        },
+        {
+         type: 'blanks',
+         badge: 'Trabajo en franjas',
+         title: 'Creación de niveles guía',
+         instruction: 
+        'Completá las frases.<br><br>' +
+        '1. tras marcar la base se pasa el peine #1 a un ___ de distancia y luego el #2 para definir la ___ superior___.<br>',
+         blanks: ['centímetro', 'franja', 'transici'],
+         tutor: 'Recuerda crear bandas paralelas de altura creciente antes de proceder a borrar las divisiones.',
+         explanation: 'Establecer cada centímetro de nivel crea la franja guía necesaria para conectar la transición.'
+},
+        {
+            type: 'traffic',
+            badge: 'Borrado de marcas',
+            title: 'SUso de la palanca intermedia',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Borrar la marca requiere presionar con fuerza la máquina en ángulo de noventa grados hacia adentro.', color: 'red' },
+                { text: 'La palanca abierta debe usarse siempre en la zona de la nuca baja para dejar a cero el contorno', color: 'red' },
+                { text: 'Para eliminar la línea entre la base 0 y el peine #1, se trabaja con la palanca en posición media a 0,8 mm', color: 'green' },
+                { text: 'Emplear la guía #0,5 en pequeños toques sobre la línea suaviza el contraste entre niveles.', color: 'green' }
+            ],
+            tutor: 'Repasa los ajustes de palanca y guías intermedias sobre el borde exacto de la marca.',
+            explanation: 'Ajustar la palanca a nivel medio y usar la guía 0,5 elimina la línea suavemente.'
+        },
+        {
+            type: 'text',
+            badge: 'Suavizado superior',
+            title: 'Cuchareo en la cresta',
+            instruction: 'Aplica la técnica de cuchareo al aproximarse a la zona de la cresta parietal para conectar con la parte alta.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('cuchareo') || v.includes('llegar')) &&
+                    (v.includes('cresta') || v.includes('salida') || v.includes('invadir') || v.includes('volumen'))
+                );
+            },
+            tutor: 'Realiza el gesto hacia afuera despegando la máquina del cráneo para no comer masa superior.',
+            explanation: 'El cuchareo al llegar a la cresta despeja la salida sin invadir el volumen.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Conexión tijera sobre peine',
+            title: 'Integración lateral-superior',
+            instruction: 'Establece tres pautas técnicas para integrar la zona alta con los laterales usando máquina o tijera sobre peine.',
+            items: [
+                { text: 'Introducir el peine plano pegado al cuero cabelludo en ángulo recto hacia adentro', correct: false },
+                { text: 'Posicionar el peine en ángulo inclinado siguiendo la caída del cráneo', correct: true },
+                { text: 'Elevar el cabello de la cresta con el peine y cortar el sobrante que sobresale', correct: true },
+                { text: 'Desplazar la tijera o máquina con cierres rítmicos paralelos al peine', correct: true }
+            ],
+            tutor: 'Fíjate en la inclinación del peine que proyecta el cabello para igualar la longitud sobrante.',
+            explanation: 'Inclinar el peine, elevar el sobrante y cortar con ritmo realiza la conexión superior.'
+        },
+        {
+            type: 'text',
+            badge: 'Texturización frontal',
+            title: 'Desfilado de la zona superior',
+            instruction: 'Realiza la técnica de desfilado a mano libre sobre las puntas del flequillo para lograr una terminación ligera.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('desfilado') || v.includes('diagonal') || v.includes('puntas')) &&
+                    (v.includes('ligereza') || v.includes('fluidez'))
+                );
+            },
+            tutor: 'Toma las mechas en elevación y orienta la tijera en diagonal realizando pequeños cortes suaves.',
+            explanation: 'El desfilado en diagonal sobre las puntas aporta ligereza y fluidez al frente.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Descarga de volumen',
+            title: 'Entresacado en zonas densas',
+            instruction: 'Marca afirmaciones correctas',
+            items: [
+                { text: 'Introducir la tijera dentada en el medio de la mecha reduce volumen abultado sin acortar el largo.', color: 'green' },
+                { text: 'Realizar diez cortes seguidos con tijera dentada en el mismo punto es ideal para dar firmeza.', color: 'red' },
+                { text: 'El entresacado en las puntas debe hacerse cortando siempre con tijera de filo dulce completamente plana.', color: 'red' },
+                { text: 'Peinar el cabello desprendido tras cada corte de entresacado permite verificar el volumen restante.', color: 'green' }
+            ],
+            tutor: 'Considera la ubicación de la tijera dentada a media mecha y el peinado continuo de comprobación.',
+            explanation: 'la tijera dentada a media mecha descarga el volumen manteniendo la longitud.'
+        },
+        {
+            type: 'text',
+            badge: 'Definición periférica',
+            title: 'Marcado de contornos y perfilado',
+            instruction: 'Efectúa el marcado de patillas y nuca con trimmer complementando con navaja para un acabado pulido.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    (v.includes('contornos') || v.includes('trimmer') || v.includes('rematar') || v.includes('navaja'))&&
+                    (v.includes('otorga') || v.includes('nitidez'))
+                );
+            },
+            tutor: 'Traza líneas limpias con la esquina del trimmer y afina el contorno con la navaja lubricada.',
+            explanation: 'Definir los contornos con trimmer y rematar con navaja otorga máxima nitidez.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Cierre del servicio',
+            title: 'Inspección y peinado final',
+            instruction: 'marca los tres pasos finales para verificar la simetría y entregar el peinado terminado al cliente.',
+            items: [
+                { text: 'Lavar la cabeza con agua hirviendo para fijar la forma del peinado', correct: false },
+                { text: 'Observar el trabajo en el espejo panorámico comprobando el equilibrio visual', correct: true },
+                { text: 'Retirar residuos de cabello del rostro y cuello con bledo o toalla', correct: true },
+                { text: 'Aplicar polvo de textura o cera mate modelando la estructura deseada', correct: true }
+            ],
+            tutor: 'Selecciona las acciones de comprobación en espejo, limpieza de restos y estilizado con producto.',
+            explanation: 'Verificar en espejo, limpiar el cuello y aplicar cera da el toque profesional.'
+        }
+    ]
+};
+
+        let currentModule = '';
+        let currentIndex = 0;
+        let attemptCount = 0;
+        let lastAudioModule = null;
+
+        // ===== MAPEO DE MÓDULOS A AUDIOS =====
+        const moduloAudioMap = {
+            'sintesis': 'mensaje1',
+            'analisis': 'mensaje2',
+            'escenarios': 'mensaje3',
+            'practica': 'mensaje4'
+        };
+
+        function startModule(id) {
+            playSound('click');
+            currentModule = id;
+            currentIndex = 0;
+            attemptCount = 0;
+            lastAudioModule = id;
+
+            // Reproducir el audio del módulo correspondiente
+            const audioKey = moduloAudioMap[id];
+            if (audioKey) {
+                playAudio(audioKey);
+            }
+
+            document.getElementById('selectionScreen').style.display = 'none';
+            document.getElementById('activityScreen').classList.add('active');
+
+            setTimeout(loadActivity, 300);
+        }
+
+        function loadActivity() {
+            attemptCount = 0;
+
+            if (currentIndex >= modules[currentModule].length) {
+                // Reproducir "lolograste.mp3" al terminar TODAS las preguntas
+                playAudio('lolograste');
+                playSound('success');
+                alert('¡Excelente! Completaste este bloque.');
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+                return;
+            }
+
+            const data = modules[currentModule][currentIndex];
+            const container = document.getElementById('activityContainer');
+
+            const msg = `Pregunta ${currentIndex + 1} de ${modules[currentModule].length}: ${data.tutor}`;
+            document.getElementById('tutorMessage').innerText = msg;
+
+            let html = `<span class="act-badge">${data.badge}</span>
+                        <h2 class="act-title">${data.title}</h2>
+                        <p class="act-instruction">${data.instruction}</p>`;
+
+            if (data.type === 'text') {
+                html += `<textarea id="txtInput" class="student-input" placeholder="Escribe tu respuesta con tus palabras..."></textarea>`;
+            } else if (data.type === 'blanks') {
+                html += `<div style="font-size:1.2rem; line-height:2.5;">`;
+                data.blanks.forEach((b, i) => {
+                    html += `${i + 1}. <input type="text" class="fill-input" data-ans="${b}"> <br>`;
+                });
+                html += `</div>`;
+            } else if (data.type === 'traffic') {
+                data.items.forEach((item, i) => {
+                    html += `<div class="traffic-row" id="row-${i}">
+                                <span>${item.text}</span>
+                                <div style="display:flex; gap:10px;">
+                                    <div class="traffic-btn bg-green" onclick="selTraffic(${i}, 'green')"></div>
+                                    <div class="traffic-btn bg-yellow" onclick="selTraffic(${i}, 'yellow')"></div>
+                                    <div class="traffic-btn bg-red" onclick="selTraffic(${i}, 'red')"></div>
+                                </div>
+                            </div>`;
+                });
+            } else if (data.type === 'checklist') {
+                data.items.forEach((item) => {
+                    html += `<div class="checklist-item" onclick="toggleCheck(this)" data-correct="${item.correct}">
+                                <div class="check-box"></div>
+                                <span>${item.text}</span>
+                            </div>`;
+                });
+            }
+
+            html += `<div id="feedback" class="feedback-area"></div>
+                     <button id="btnCheck" class="btn-action" onclick="validate()">Verificar respuesta</button>
+                     <button class="btn-action btn-back" onclick="location.reload()">Salir al menú</button>`;
+
+            container.innerHTML = html;
+            wireUiSounds();
+        }
+
+        let trafficAns = {};
+
+        function selTraffic(idx, color) {
+            trafficAns[idx] = color;
+            const row = document.getElementById(`row-${idx}`);
+            row.querySelectorAll('.traffic-btn').forEach(b => b.classList.remove('active'));
+            row.querySelector(`.bg-${color}`).classList.add('active');
+            playSound('click');
+        }
+
+        function toggleCheck(el) {
+            el.classList.toggle('selected');
+            el.querySelector('.check-box').innerText = el.classList.contains('selected') ? '✓' : '';
+
+            if (el.classList.contains('selected')) {
+                el.style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.background = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.color = 'white';
+            } else {
+                el.style.borderColor = 'transparent';
+                el.querySelector('.check-box').style.background = 'transparent';
+                el.querySelector('.check-box').style.borderColor = '#ccc';
+            }
+
+            playSound('click');
+        }
+
+        function validate() {
+            const data = modules[currentModule][currentIndex];
+            const feedback = document.getElementById('feedback');
+            let isCorrect = false;
+
+            if (data.type === 'text') {
+                const val = document.getElementById('txtInput').value;
+                isCorrect = data.validation(val);
+            } else if (data.type === 'blanks') {
+                const inputs = document.querySelectorAll('.fill-input');
+                let hits = 0;
+                inputs.forEach(inp => {
+                    const v = normalizar(inp.value);
+                    const ans = normalizar(inp.dataset.ans);
+                    if (v.length > 1 && ans.startsWith(v.slice(0, Math.max(2, Math.min(v.length, ans.length))))) hits++;
+                });
+                isCorrect = (hits === data.blanks.length);
+            } else if (data.type === 'traffic') {
+                let hits = 0;
+                data.items.forEach((item, i) => { if (trafficAns[i] === item.color) hits++; });
+                isCorrect = (hits === data.items.length);
+            } else if (data.type === 'checklist') {
+                let correct = true;
+                document.querySelectorAll('.checklist-item').forEach(item => {
+                    const sel = item.classList.contains('selected');
+                    const should = item.dataset.correct === 'true';
+                    if (sel !== should) correct = false;
+                });
+                isCorrect = correct;
+            }
+
+            feedback.style.display = 'block';
+
+            if (isCorrect) {
+                playAudio('correcto');
+                playSound('success');
+                feedback.className = 'feedback-area feedback-success';
+                feedback.innerHTML = `<strong>¡Muy bien!</strong><br>${data.explanation}`;
+                document.getElementById('btnCheck').innerText = 'Siguiente pregunta →';
+                document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+            } else {
+                attemptCount++;
+
+                if (attemptCount < 2) {
+                    playAudio('error1');
+                    feedback.className = 'feedback-area feedback-retry';
+                    feedback.innerHTML = `<strong>Buen intento.</strong> Revisá tu respuesta. Pista: ${data.tutor}`;
+                } else {
+                    playAudio('error2');
+                    feedback.className = 'feedback-area feedback-fail';
+                    feedback.innerHTML = `<strong>No pasa nada, aprendamos juntos:</strong><br>${data.explanation}`;
+                    document.getElementById('btnCheck').innerText = 'Entendido, continuar →';
+                    document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+                }
+            }
+        }
+
+        function replayTutorMessage() {
+            // Replay del último audio de módulo reproducido
+            if (lastAudioModule) {
+                const audioKey = moduloAudioMap[lastAudioModule];
+                if (audioKey) {
+                    playAudio(audioKey);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
